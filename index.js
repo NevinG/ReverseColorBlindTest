@@ -36,16 +36,31 @@ function draw() {
     //pick random spot in a square around the circle
     const listOfCircles = [];
     
-    while(listOfCircles.length < 100){
+    let radiusOfCircle;
+    while(listOfCircles.length < 600){
         ctx.fillStyle = 'black';
         ctx.strokeStyle = 'black';
 
         ctx.beginPath();    
         const x = (Math.random() * minDimenstion) + (width / 2 - (minDimenstion / 2));
         const y = (Math.random() * minDimenstion) + (height / 2 - (minDimenstion / 2));
-        
+
         //get the radius of the circle
-        const radiusOfCircle = minDimenstion / 2 / 19;
+        if(listOfCircles.length < 100) {
+            radiusOfCircle = minDimenstion / 2 / 19;
+        }
+        else if( listOfCircles.length < 250){
+            radiusOfCircle = minDimenstion / 2 / 27;
+        }
+        else if( listOfCircles.length < 350){
+            radiusOfCircle = minDimenstion / 2 / 35;
+        }
+        else if( listOfCircles.length < 500){
+            radiusOfCircle = minDimenstion / 2 / 41;
+        }
+        else if( listOfCircles.length < 600){
+            radiusOfCircle = minDimenstion / 2 / 80;
+        }
 
         //then check if that spot is in the circle
         //check in polar if r is less than the radius of the background circle
@@ -78,6 +93,7 @@ function draw() {
         ctx.fill();
         ctx.stroke();
     }
+    console.log((minDimenstion / 2));
     
 }
 
