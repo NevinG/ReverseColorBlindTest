@@ -23,13 +23,52 @@ draw();
 
 //start making an ishaara circle
 function draw() {
-    ctx.fillStyle = 'white';
+    const colorPalletes = [
+        //  {
+        //      insideColors: ['rgb(173,111,114)','rgb(149,87,90)','rgb(166,104,108)','rgb(169,107,110)','rgb(140,79,82)','rgb(156,94,98)'],
+        //      outsideColors: ['rgb(109,109,109)', 'rgb(83,83,83)', 'rgb(118,118,118)', 'rgb(101,101,101)', 'rgb(126,126,126)', 'rgb(76,76,76)', 'rgb(82,82,82)', 'rgb(97,97,97)']
+        //  },
+         {
+            insideColors: ['rgb(191,144,25)', 'rgb(190,143,22)', 'rgb(189,142,19)', 'rgb(113,158,28)', 'rgb(113,158,28)', 'rgb(188,140,16)', 'rgb(113,158,28)', 'rgb(113,158,28)'],
+            outsideColors: ['rgb(75,126,40)', 'rgb(75,126,40)', 'rgb(237,99,17)', 'rgb(75,126,41)', 'rgb(135,112,37)', 'rgb(75,126,40)', 'rgb(237,99,17)', 'rgb(94,150,60)']
+        }
+    ];
+
+    const plateColors = colorPalletes[Math.floor(Math.random() * colorPalletes.length)];
+    const insideColors = plateColors.insideColors;
+    const outsideColors = plateColors.outsideColors;
+
     ctx.strokeStyle = 'white';
     ctx.beginPath();
-    const minDimenstion = Math.min(width, height);
-    ctx.arc(width / 2, height / 2, minDimenstion / 2, 0, Math.PI * 2, true);
+    const minDimension = Math.min(width, height);
+    const plateRadius = minDimension / 4;
+
+    //get text in ImageData so we can use for later to see if shape overlaps the text
+    //calibrate right font size
+    const numberToAppearInCircle = Math.floor(Math.random() * 90 + 10).toString();
+    let fontSize = 0;
+    let textWidth = 0;
+    while(textWidth / (plateRadius * 2) < .8){
+        fontSize++;
+
+        ctx.font = 'bold ' + fontSize + 'px Arial';
+        textWidth = ctx.measureText(numberToAppearInCircle).width;
+    }
+
+    ctx.fillStyle = 'rgb(10,10,10)';
+    ctx.strokeStyle = 'rgb(10,10,10)';
+    ctx.fillText(numberToAppearInCircle, width / 2 - textWidth / 2, height / 2 + fontSize / 3.5);
+    const myImageData = ctx.getImageData(0,0,width, height);
+
+    ctx.fillStyle = 'white';
+    ctx.strokeStyle = 'white';
+    ctx.arc(width / 2, height / 2, plateRadius, 0, Math.PI * 2, true);
     ctx.fill();
     ctx.stroke();
+
+
+    const plateArea = Math.PI * Math.pow(plateRadius, 2);
+    let currentPlateCoverage = 0;
 
     //pick random spot in circle and then draw a circle there
     
@@ -37,35 +76,38 @@ function draw() {
     const listOfCircles = [];
     
     let radiusOfCircle;
-    while(listOfCircles.length < 600){
+    while(currentPlateCoverage / plateArea < .65){
         ctx.fillStyle = 'black';
         ctx.strokeStyle = 'black';
 
         ctx.beginPath();    
-        const x = (Math.random() * minDimenstion) + (width / 2 - (minDimenstion / 2));
-        const y = (Math.random() * minDimenstion) + (height / 2 - (minDimenstion / 2));
+        const x = Math.floor((Math.random() * minDimension) + (width / 2 - (plateRadius)));
+        const y = Math.floor((Math.random() * minDimension) + (height / 2 - (plateRadius)));
 
         //get the radius of the circle
-        if(listOfCircles.length < 100) {
-            radiusOfCircle = minDimenstion / 2 / 19;
+        if(currentPlateCoverage / plateArea < .25) {
+            radiusOfCircle = plateRadius / 20;
         }
-        else if( listOfCircles.length < 250){
-            radiusOfCircle = minDimenstion / 2 / 27;
+        else if(currentPlateCoverage / plateArea < .40){
+            radiusOfCircle = plateRadius / 25;
         }
-        else if( listOfCircles.length < 350){
-            radiusOfCircle = minDimenstion / 2 / 35;
+        else if(currentPlateCoverage / plateArea < .50){
+            radiusOfCircle = plateRadius / 40;
         }
-        else if( listOfCircles.length < 500){
-            radiusOfCircle = minDimenstion / 2 / 41;
+        else if(currentPlateCoverage / plateArea < .58){
+            radiusOfCircle = plateRadius / 50;
         }
-        else if( listOfCircles.length < 600){
-            radiusOfCircle = minDimenstion / 2 / 80;
+        else if(currentPlateCoverage / plateArea < .64){
+            radiusOfCircle = plateRadius / 80;
+        }
+        else if(currentPlateCoverage / plateArea < .65){
+            radiusOfCircle = plateRadius / 150;
         }
 
         //then check if that spot is in the circle
         //check in polar if r is less than the radius of the background circle
         const r = Math.sqrt(Math.pow((x - width / 2), 2) + Math.pow((y - height / 2), 2));
-        if(r + radiusOfCircle > minDimenstion / 2){
+        if(r + radiusOfCircle > plateRadius){
             continue;
         }
 
@@ -74,7 +116,6 @@ function draw() {
         let brokeOut = false;
         for (const circle of listOfCircles){
             if(Math.sqrt(Math.pow(x - circle.x, 2) + Math.pow(y - circle.y, 2)) < radiusOfCircle + circle.r){
-                ctx.fillStyle = 'blue';
                 brokeOut = true;
                 break;
             }
@@ -84,6 +125,23 @@ function draw() {
         }
 
         //then draw the circle
+
+        //get color for the circle
+        //check if circle is on the number
+
+        if(myImageData.data[(y * width + x) * 4] == 10){
+            const color = insideColors[Math.floor((Math.random() * insideColors.length))];
+            ctx.fillStyle = color;
+            ctx.strokeStyle = color;
+        }
+        else {
+            const color = outsideColors[Math.floor((Math.random() * outsideColors.length))];
+            ctx.fillStyle = color;
+            ctx.strokeStyle = color;
+        }
+        
+        currentPlateCoverage += Math.PI * Math.pow(radiusOfCircle, 2);
+
         listOfCircles.push({
             x: x,
             y: y,
@@ -93,9 +151,9 @@ function draw() {
         ctx.fill();
         ctx.stroke();
     }
-    console.log((minDimenstion / 2));
-    
+    //ctx.putImageData(myImageData,0,0);
 }
+
 
 
 
