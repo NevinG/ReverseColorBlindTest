@@ -8,6 +8,9 @@ let height = window.innerHeight;
 canvas.width = width;
 canvas.height = height;
 
+let circleBackgroundColor = 'white';
+let backgroundColor = 'white    ';
+
 function windowResize() {
     width = window.innerWidth;
     height = window.innerHeight;
@@ -24,28 +27,35 @@ draw();
 //start making an ishaara circle
 function draw() {
     const colorPalletes = [
-        //  {
-        //      insideColors: ['rgb(173,111,114)','rgb(149,87,90)','rgb(166,104,108)','rgb(169,107,110)','rgb(140,79,82)','rgb(156,94,98)'],
-        //      outsideColors: ['rgb(109,109,109)', 'rgb(83,83,83)', 'rgb(118,118,118)', 'rgb(101,101,101)', 'rgb(126,126,126)', 'rgb(76,76,76)', 'rgb(82,82,82)', 'rgb(97,97,97)']
-        //  },
          {
-            insideColors: ['rgb(191,144,25)', 'rgb(190,143,22)', 'rgb(189,142,19)', 'rgb(113,158,28)', 'rgb(113,158,28)', 'rgb(188,140,16)', 'rgb(113,158,28)', 'rgb(113,158,28)'],
-            outsideColors: ['rgb(75,126,40)', 'rgb(75,126,40)', 'rgb(237,99,17)', 'rgb(75,126,41)', 'rgb(135,112,37)', 'rgb(75,126,40)', 'rgb(237,99,17)', 'rgb(94,150,60)']
-        }
+             insideColors: ['rgb(220,0,0)', 'rgb(240,0,0)', 'rgb(260,0,0)'],
+             outsideColors: ['rgb(110,75,0)', 'rgb(130,75,0)', 'rgb(150,75,0)'],
+         },
+        //  {
+        //     insideColors: ['rgb(188,140,15)', 'rgb(113,158,28)', 'rgb(192,146,30)'],
+        //     outsideColors: ['rgb(135,112,37)', 'rgb(237,99,17)', 'rgb(75,126,41)'],
+        // }
     ];
 
     const plateColors = colorPalletes[Math.floor(Math.random() * colorPalletes.length)];
     const insideColors = plateColors.insideColors;
     const outsideColors = plateColors.outsideColors;
 
-    ctx.strokeStyle = 'white';
+    //draw background
+    ctx.fillStyle = backgroundColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.stroke();
+
+    ctx.strokeStyle = circleBackgroundColor;
     ctx.beginPath();
     const minDimension = Math.min(width, height);
     const plateRadius = minDimension / 4;
+    
 
     //get text in ImageData so we can use for later to see if shape overlaps the text
     //calibrate right font size
     const numberToAppearInCircle = Math.floor(Math.random() * 90 + 10).toString();
+
     let fontSize = 0;
     let textWidth = 0;
     while(textWidth / (plateRadius * 2) < .8){
@@ -60,8 +70,8 @@ function draw() {
     ctx.fillText(numberToAppearInCircle, width / 2 - textWidth / 2, height / 2 + fontSize / 3.5);
     const myImageData = ctx.getImageData(0,0,width, height);
 
-    ctx.fillStyle = 'white';
-    ctx.strokeStyle = 'white';
+    ctx.fillStyle = circleBackgroundColor;
+    ctx.strokeStyle = circleBackgroundColor;
     ctx.arc(width / 2, height / 2, plateRadius, 0, Math.PI * 2, true);
     ctx.fill();
     ctx.stroke();
@@ -129,6 +139,7 @@ function draw() {
         //get color for the circle
         //check if circle is on the number
 
+
         if(myImageData.data[(y * width + x) * 4] == 10){
             const color = insideColors[Math.floor((Math.random() * insideColors.length))];
             ctx.fillStyle = color;
@@ -136,6 +147,9 @@ function draw() {
         }
         else {
             const color = outsideColors[Math.floor((Math.random() * outsideColors.length))];
+            ctx.fillStyle = color;
+            ctx.strokeStyle = color
+            
             ctx.fillStyle = color;
             ctx.strokeStyle = color;
         }
