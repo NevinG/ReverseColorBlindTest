@@ -9,7 +9,7 @@ canvas.width = width;
 canvas.height = height;
 
 let circleBackgroundColor = 'white';
-let backgroundColor = 'white    ';
+let backgroundColor = 'white';
 
 function windowResize() {
     width = window.innerWidth;
@@ -28,8 +28,8 @@ draw();
 function draw() {
     const colorPalletes = [
          {
-             insideColors: ['rgb(220,0,0)', 'rgb(240,0,0)', 'rgb(260,0,0)'],
-             outsideColors: ['rgb(110,75,0)', 'rgb(130,75,0)', 'rgb(150,75,0)'],
+             insideColors: ['rgb(220,20,0)', 'rgb(240,20,0)', 'rgb(260,20,0)'],
+             outsideColors: ['rgb(110,65,0)', 'rgb(130,65,0)', 'rgb(150,65,0)'],
          },
         //  {
         //     insideColors: ['rgb(188,140,15)', 'rgb(113,158,28)', 'rgb(192,146,30)'],
