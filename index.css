@@ -2,3 +2,9 @@ body{
     background-color: white;
     margin: 0;
 }
+
+form {
+    position: absolute;
+    top:0;
+    right:0;
+}
